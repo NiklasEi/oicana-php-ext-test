@@ -39,10 +39,10 @@ jobs:
         env:
           debug: true
       - run: php -v
-      - if: ${{ env.env_text == '' }}
+      - if: ${{ matrix.flags == '' }}
         name: Build PHP extension
         run: cargo build --release
-      - if: ${{ env.env_text != '' }}
+      - if: ${{ matrix.flags != '' }}
         name: Build PHP extension
         run: cargo build --release
         env:
