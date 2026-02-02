@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  build-php-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rust: stable
+            lib: php_test.so
+            flags: "-C link-arg=-Wl,-undefined,dynamic_lookup"
+          - os: macos-latest
+            rust: stable
+            lib: php_test.dylib
+            flags: "-C link-arg=-Wl,-undefined,dynamic_lookup"
+          - os: windows-latest
+            # ext-php-rs requires nightly Rust when on Windows.
+            rust: nightly
+            lib: php_test.dll
+            flags: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - run: rustup show
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+        env:
+          debug: true
+      - run: php -v
+      - if: ${{ env.env_text == '' }}
+        name: Build PHP extension
+        run: cargo build --release
+      - if: ${{ env.env_text != '' }}
+        name: Build PHP extension
+        run: cargo build --release
+        env:
+          RUSTFLAGS: ${{ matrix.flags }}
