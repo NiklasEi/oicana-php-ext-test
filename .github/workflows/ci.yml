@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
+        platform:
           - os: ubuntu-latest
             rust: stable
             lib: php_test.so
@@ -24,26 +24,34 @@ jobs:
             rust: nightly
             lib: php_test.dll
             flags: ""
-    runs-on: ${{ matrix.os }}
+        php:
+          - '8.3'
+          - '8.4'
+          - '8.5'
+        ts:
+          - nts
+          - zts
+    runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v5
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.rust }}
+          toolchain: ${{ matrix.platform.rust }}
       - run: rustup show
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.php }}
         env:
           debug: true
+          phpts: ${{ matrix.ts }}
       - run: php -v
-      - if: ${{ matrix.flags == '' }}
+      - if: ${{ matrix.platform.flags == '' }}
         name: Build PHP extension (no RUSTFLAGS)
         run: cargo build --release
-      - if: ${{ matrix.flags != '' }}
+      - if: ${{ matrix.platform.flags != '' }}
         name: Build PHP extension (with RUSTFLAGS)
         run: cargo build --release
         env:
-          RUSTFLAGS: ${{ matrix.flags }}
+          RUSTFLAGS: ${{ matrix.platform.flags }}
