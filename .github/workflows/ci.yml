@@ -40,10 +40,10 @@ jobs:
           debug: true
       - run: php -v
       - if: ${{ matrix.flags == '' }}
-        name: Build PHP extension
+        name: Build PHP extension (no RUSTFLAGS)
         run: cargo build --release
       - if: ${{ matrix.flags != '' }}
-        name: Build PHP extension
+        name: Build PHP extension (with RUSTFLAGS)
         run: cargo build --release
         env:
           RUSTFLAGS: ${{ matrix.flags }}
