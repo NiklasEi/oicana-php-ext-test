@@ -31,12 +31,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust }}
-          components: rustfmt, clippy
-      - run: rustup show
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -44,6 +38,12 @@ jobs:
         env:
           phpts: ${{ matrix.phpts }}
           debug: true
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+      - run: rustup show
       - name: Build
         run: cargo build --release
 
@@ -76,11 +76,6 @@ jobs:
     runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v5
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.platform.rust }}
-      - run: rustup show
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -88,6 +83,11 @@ jobs:
         env:
           debug: true
           phpts: ${{ matrix.ts }}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.platform.rust }}
+      - run: rustup show
       - run: php -v
       - if: ${{ matrix.platform.flags == '' }}
         name: Build PHP extension (no RUSTFLAGS)
