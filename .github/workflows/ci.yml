@@ -44,10 +44,6 @@ jobs:
           toolchain: ${{ matrix.rust }}
           components: rustfmt, clippy
       - run: rustup show
-      - name: Cache cargo dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: ${{ env.RUST_CACHE_PREFIX }}
       - name: Build
         run: cargo build --release
 
