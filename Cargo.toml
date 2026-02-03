@@ -1,5 +1,6 @@
 [package]
-name = "php-test"
+name = "hello-php-rs"
+description = "A simple PHP extension built with ext-php-rs"
 version = "0.1.0"
 edition = "2024"
 
