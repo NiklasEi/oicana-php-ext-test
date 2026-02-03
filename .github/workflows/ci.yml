@@ -94,10 +94,6 @@ jobs:
           toolchain: ${{ matrix.platform.rust }}
           components: rustfmt, clippy
       - run: php -v
-      - name: Cache cargo dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: ${{ env.RUST_CACHE_PREFIX }}
       - if: ${{ matrix.platform.flags == '' }}
         name: Build PHP extension (no RUSTFLAGS)
         run: cargo build --release
