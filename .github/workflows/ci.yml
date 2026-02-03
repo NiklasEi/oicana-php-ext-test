@@ -31,6 +31,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+      - run: rustup show
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -38,12 +44,6 @@ jobs:
         env:
           phpts: ${{ matrix.phpts }}
           debug: true
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust }}
-          components: rustfmt, clippy
-      - run: rustup show
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
         with:
