@@ -80,6 +80,10 @@ jobs:
     runs-on: ${{ matrix.platform.os }}
     steps:
       - uses: actions/checkout@v5
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.platform.rust }}
       - run: rustup show
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -88,10 +92,6 @@ jobs:
         env:
           debug: true
           phpts: ${{ matrix.ts }}
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.platform.rust }}
       - run: php -v
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
